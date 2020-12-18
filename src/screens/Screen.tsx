@@ -16,7 +16,7 @@ const Screen = ({pageTitle, children}: ScreenProps) => {
     return(
         <View style={styles.container}>
             <ScreenHeader title={pageTitle}/>
-            <View>
+            <View style={{flex: 1}}>
                 {children}
             </View>
         </View>

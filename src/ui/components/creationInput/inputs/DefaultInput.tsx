@@ -4,7 +4,8 @@ import { LIGHT_BLUE } from '../../../consts/colors';
 
 type Props = {
     onChangeText: (name: string) => void,
-    placeholder: string
+    placeholder: string,
+    value?: string
 }
 
 const DefaultInput = (props: Props) => {

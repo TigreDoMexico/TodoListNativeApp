@@ -1,13 +1,75 @@
 import React, { Component } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
+import iTask from '../../model/interface/iTask';
 import Task from '../../model/task';
 import NewTaskInput from '../../ui/components/creationInput/NewTaskInput';
+import TaskList from '../../ui/components/list/TaskList';
+import EditTaskModal from '../../ui/components/modal/EditTaskModal';
 
 import Screen from '../Screen';
 
 class TodoListScreen extends Component {
     state = {
-        tasks: Array<Task>(),
+        tasks: Array<iTask>(),
+        isEditingTask: false,
+        editTaskId: "",
+    }
+
+    getTaskIndexById = (taskId: string) => this.state.tasks.map(el => el.id).indexOf(taskId);
+
+    onChangeTaskStatusHandler = (taskId: string) => {
+        let newTaskList = this.state.tasks.map(el => {
+            if (el.id === taskId)
+                el.isDone = !el.isDone;
+
+            return el;
+        });
+
+        this.setState({
+            tasks: newTaskList
+        });
+    }
+
+    onAskToEditHandler = (taskId: string) => {
+        this.setState({
+            isEditingTask: true,
+            editTaskId: taskId,
+        });
+    }
+
+    onAskToEndEditionHandler = () => {
+        this.setState({
+            isEditingTask: false,
+            editTaskId: "",
+        });
+    }
+
+    onUpdateTask = (task: iTask) => {
+        let newTaskList = this.state.tasks
+        let index = this.getTaskIndexById(task.id);
+
+        if(index != -1)
+            newTaskList[index] = task;
+
+        this.setState({
+            tasks: newTaskList,
+            isEditingTask: false,
+            editTaskId: "",
+        });
+    }
+
+    onDeleteTask = (taskId: string) => {
+        let newTaskList = this.state.tasks
+        let index = this.getTaskIndexById(taskId);
+
+        if(index != -1)
+            newTaskList.splice(index, 1);
+
+        this.setState({
+            tasks: newTaskList,
+            isEditingTask: false,
+            editTaskId: "",
+        });
     }
 
     onSaveTaskHandler = (taskName: string) => {
@@ -18,21 +80,42 @@ class TodoListScreen extends Component {
         })
     }
 
+    _createEditModal = (taskId: string) => {
+        let index = this.getTaskIndexById(taskId);
+
+        if(index !== -1){
+            var task = this.state.tasks[index] as Task;
+
+            return (
+                <EditTaskModal
+                    isVisible={this.state.isEditingTask}
+                    task={task.clone()}
+                    onSaveTask={this.onUpdateTask}
+                    onDeleteTask={this.onDeleteTask}
+                    onCloseWithoutChange={this.onAskToEndEditionHandler}
+                />
+            )
+        }
+
+        return null;
+    }
+
     render() {
         return (
             <Screen pageTitle="Lista de Tarefas">
                 <View style={styles.addTaskContainer}>
                     <NewTaskInput placeholder="Escreva a tarefa aqui" onSaveTask={this.onSaveTaskHandler} />
                 </View>
-                <FlatList
-                    data={this.state.tasks}
-                    renderItem={({item}) => (
-                        <View>
-                            <Text> - {item.name}</Text>
-                        </View>
-                    )}
-                    keyExtractor={item => item.id.toString()}
-                />
+                <View style={styles.taskListContainer}>
+                    <TaskList
+                        tasks={this.state.tasks}
+                        onChangeTaskStatus={this.onChangeTaskStatusHandler}
+                        onEdit={this.onAskToEditHandler}
+                    />
+                </View>
+                {this.state.isEditingTask !== null ?
+                    this._createEditModal(this.state.editTaskId) : null
+                }
             </Screen>
         );
     }
@@ -41,8 +124,14 @@ class TodoListScreen extends Component {
 const styles = StyleSheet.create({
     addTaskContainer: {
         marginTop: 20,
+        marginBottom: 30,
         marginHorizontal: 20
     },
+    taskListContainer: {
+        flex: 1,
+        marginHorizontal: 20,
+        marginBottom: 10,
+    }
 });
 
 export default TodoListScreen;

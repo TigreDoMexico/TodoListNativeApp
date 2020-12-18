@@ -13,6 +13,7 @@ type Props = {
 class NewTaskInput extends Component<Props> {
     state = {
         typedTaskName: '',
+        inputReference: React.createRef<TextInput>()
     }
 
     createTask = () => {
@@ -20,6 +21,9 @@ class NewTaskInput extends Component<Props> {
 
         if(taskName){
             this.props.onSaveTask(taskName);
+            this.setState({
+                typedTaskName: '',
+            })
         }
     }
 
@@ -33,6 +37,7 @@ class NewTaskInput extends Component<Props> {
                 <DefaultInput
                     placeholder={this.props.placeholder}
                     onChangeText={this.onTypeNameHandler}
+                    value={this.state.typedTaskName}
                 />
                 <View style={styles.addButton}>
                     <DefaultButton
@@ -47,13 +52,12 @@ class NewTaskInput extends Component<Props> {
 
 const styles = StyleSheet.create({
     container: {
-        alignItems: 'flex-start',
+        alignItems: 'center',
         justifyContent: 'space-around',
         flexDirection: 'row',
     },
     addButton: {
         marginLeft: 10,
-        marginTop: 7
     }
 });
 
