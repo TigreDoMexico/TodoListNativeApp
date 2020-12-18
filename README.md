@@ -19,8 +19,7 @@ ou
 ou
 > yarn start
 
-* Para testar no dispositivo
-Para testar no celular sem precisar de emulador, é preciso primeiro baixar o aplicativo Expo no celular 
+* Para testar no dispositivo é preciso primeiro baixar o aplicativo Expo no celular 
 
   - Playstore: https://play.google.com/store/apps/details?id=host.exp.exponent&hl=pt_BR&gl=US 
   - AppStore: https://apps.apple.com/br/app/expo-client/id982107779?l=en
