@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, StatusBar } from 'react-native';
+import { Text, View, StyleSheet, StatusBar, Platform } from 'react-native';
 
 import { BLUE, DEFAULT_WHITE } from '../../consts/colors';
 
@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: BLUE,
-    height: 55
+    height: Platform.OS === "ios" ? 70 : 55,
+    paddingTop: Platform.OS === "ios" ? 25 : 0
   },
   title: {
       color: DEFAULT_WHITE,

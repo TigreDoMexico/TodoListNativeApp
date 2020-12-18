@@ -4,9 +4,6 @@ import ScreenHeader from '../ui/components/header/ScreenHeader';
 
 import { DEFAULT_WHITE } from '../ui/consts/colors';
 
-// type ContainsChildren<T = {}> =
-//     T & { children?: React.ReactNode}
-
 type ScreenProps = {
     pageTitle: string
     children: React.ReactNode
