@@ -5,32 +5,25 @@ Um aplicativo feito em React Native que salva uma lista de tarefas criadas pelo 
 ## Tecnologias Utilizadas
 
 * React-Native versão 40.0.1
-* Expo versão 40.0.0
 
 ## Teste e Inicialização
 
 * Para baixar as bibliotecas
-> npm install 
+> npm install
 ou
 > yarn install
 
-* Para executar a aplicação no terminal
-> npm start 
-ou
-> yarn start
+* Para testar no dispositivo ou emulador é preciso primeiro configurar a máquina local
+  - Manual React Native para configurar o ambiente: https://reactnative.dev/docs/environment-setup
 
-* Para testar no dispositivo é preciso primeiro baixar o aplicativo Expo no celular 
-
-  - Playstore: https://play.google.com/store/apps/details?id=host.exp.exponent&hl=pt_BR&gl=US 
-  - AppStore: https://apps.apple.com/br/app/expo-client/id982107779?l=en
-
-Com o App Baixado é só ler o QR Code apresentado no terminal que está executando a aplicação. 
-Caso não seja mostrado o QR Code é só apertar a tecla 'c' no terminal
+* Para executar a aplicação no Android
+> npm run android
 
 ## Features
 
 - [X] Criação de Tarefas
 - [X] Customização das cores das tarefas
 - [ ] Salvar as tarefas na memória do dispositivo
+- [ ] Inclusão de Testes Automatizados
 
 > Status do Projeto: Em desenvolvimento :warning:
