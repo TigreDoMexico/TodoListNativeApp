@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+
 import iTask from '../../model/interface/iTask';
 import Task from '../../model/task';
 import NewTaskInput from '../../ui/components/creationInput/NewTaskInput';
 import TaskList from '../../ui/components/list/TaskList';
 import EditTaskModal from '../../ui/components/modal/EditTaskModal';
+
+import { iTaskListReducer } from '../../store/reducers/TaskListReducer/types';
 
 import Screen from '../Screen';
 
@@ -14,6 +18,10 @@ class TodoListScreen extends Component {
         isEditingTask: false,
         editTaskId: "",
     }
+
+    taskList = useSelector((state: {TaskListReducer: iTaskListReducer}) => 
+                            state.TaskListReducer.tasks)
+    dispatch = useDispatch()
 
     getTaskIndexById = (taskId: string) => this.state.tasks.map(el => el.id).indexOf(taskId);
 
