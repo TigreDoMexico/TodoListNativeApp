@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, createRef, useRef, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -11,122 +11,52 @@ import EditTaskModal from '../../ui/components/modal/EditTaskModal';
 import { iTaskListReducer } from '../../store/reducers/TaskListReducer/types';
 
 import Screen from '../Screen';
+import { addNewTask, changeTaskStatus, deleteTask, updateTask } from '../../store/reducers/TaskListReducer';
+import { ModalHandles } from '../../ui/components/modal/EditTaskModal/types';
 
-class TodoListScreen extends Component {
-    state = {
-        tasks: Array<iTask>(),
-        isEditingTask: false,
-        editTaskId: "",
+const TodoListScreen = () => {
+    const editModalRef = createRef<ModalHandles>();
+    
+    const taskList = useSelector((state: { TaskListState: iTaskListReducer }) =>
+        state.TaskListState.tasks)
+
+    const dispatch = useDispatch()
+
+    const onChangeTaskStatusHandler = (taskId: string) => dispatch(changeTaskStatus(taskId))    
+
+    const onEditTaskHandler = (taskId: string) => {
+        editModalRef.current?.openModal();
+        editModalRef.current?.setTask(taskList.filter(el => el.id === taskId)[0]);
     }
 
-    taskList = useSelector((state: {TaskListReducer: iTaskListReducer}) => 
-                            state.TaskListReducer.tasks)
-    dispatch = useDispatch()
+    const onUpdateTask = (task: iTask) => dispatch(updateTask(task));
+    
+    const onDeleteTask = (taskId: string) => dispatch(deleteTask(taskId))
 
-    getTaskIndexById = (taskId: string) => this.state.tasks.map(el => el.id).indexOf(taskId);
-
-    onChangeTaskStatusHandler = (taskId: string) => {
-        let newTaskList = this.state.tasks.map(el => {
-            if (el.id === taskId)
-                el.isDone = !el.isDone;
-
-            return el;
-        });
-
-        this.setState({
-            tasks: newTaskList
-        });
-    }
-
-    onAskToEditHandler = (taskId: string) => {
-        this.setState({
-            isEditingTask: true,
-            editTaskId: taskId,
-        });
-    }
-
-    onAskToEndEditionHandler = () => {
-        this.setState({
-            isEditingTask: false,
-            editTaskId: "",
-        });
-    }
-
-    onUpdateTask = (task: iTask) => {
-        let newTaskList = this.state.tasks
-        let index = this.getTaskIndexById(task.id);
-
-        if(index != -1)
-            newTaskList[index] = task;
-
-        this.setState({
-            tasks: newTaskList,
-            isEditingTask: false,
-            editTaskId: "",
-        });
-    }
-
-    onDeleteTask = (taskId: string) => {
-        let newTaskList = this.state.tasks
-        let index = this.getTaskIndexById(taskId);
-
-        if(index != -1)
-            newTaskList.splice(index, 1);
-
-        this.setState({
-            tasks: newTaskList,
-            isEditingTask: false,
-            editTaskId: "",
-        });
-    }
-
-    onSaveTaskHandler = (taskName: string) => {
+    const onSaveTaskHandler = (taskName: string) => {
         var task = new Task(taskName)
-
-        this.setState({
-            tasks: [...this.state.tasks, task]
-        })
+        dispatch(addNewTask(task))
     }
 
-    _createEditModal = (taskId: string) => {
-        let index = this.getTaskIndexById(taskId);
-
-        if(index !== -1){
-            var task = this.state.tasks[index] as Task;
-
-            return (
-                <EditTaskModal
-                    isVisible={this.state.isEditingTask}
-                    task={task.clone()}
-                    onSaveTask={this.onUpdateTask}
-                    onDeleteTask={this.onDeleteTask}
-                    onCloseWithoutChange={this.onAskToEndEditionHandler}
+    return (
+        <Screen pageTitle="Lista de Tarefas">
+            <View style={styles.addTaskContainer}>
+                <NewTaskInput placeholder="Escreva a tarefa aqui" onSaveTask={onSaveTaskHandler} />
+            </View>
+            <View style={styles.taskListContainer}>
+                <TaskList
+                    tasks={taskList}
+                    onChangeTaskStatus={onChangeTaskStatusHandler}
+                    onEdit={onEditTaskHandler}
                 />
-            )
-        }
-
-        return null;
-    }
-
-    render() {
-        return (
-            <Screen pageTitle="Lista de Tarefas">
-                <View style={styles.addTaskContainer}>
-                    <NewTaskInput placeholder="Escreva a tarefa aqui" onSaveTask={this.onSaveTaskHandler} />
-                </View>
-                <View style={styles.taskListContainer}>
-                    <TaskList
-                        tasks={this.state.tasks}
-                        onChangeTaskStatus={this.onChangeTaskStatusHandler}
-                        onEdit={this.onAskToEditHandler}
-                    />
-                </View>
-                {this.state.isEditingTask !== null ?
-                    this._createEditModal(this.state.editTaskId) : null
-                }
-            </Screen>
-        );
-    }
+            </View>            
+            <EditTaskModal
+                ref={editModalRef}
+                onSaveTask={onUpdateTask}
+                onDeleteTask={onDeleteTask}
+            />
+        </Screen>
+    );
 }
 
 const styles = StyleSheet.create({

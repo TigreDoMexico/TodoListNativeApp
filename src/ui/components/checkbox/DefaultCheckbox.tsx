@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, TouchableOpacity, Platform } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { BLUE, DEFAULT_WHITE, LIGHT_BLUE } from '../../consts/colors';
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
 }
 
 const DefaultCheckbox = (props: Props) => {
-    let checkIcon = props.isChecked ? <Ionicons name={Platform.OS == 'ios' ? "ios-checkmark" : "md-checkmark"} size={20} color="green" /> : null;
+    let checkIcon = props.isChecked ? <Icon name={'check'} size={20} color="green" /> : null;
 
     return (
         <TouchableOpacity onPress={props.onPress}>

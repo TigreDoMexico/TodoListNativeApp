@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, useCallback, useImperativeHandle, useRef, useState } from 'react';
 import { View, StyleSheet, Text, Platform, Dimensions } from 'react-native';
 import Modal from 'react-native-modal'
-import { Ionicons } from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { BLUE, DANGER_COLOR, DARK_BLUE, DEFAULT_WHITE, PURPLE, ORANGE, SOFT_GREEN, SUCCESS_COLOR, PINK, } from '../../consts/colors';
 import DefaultButton from '../button/DefaultButton';
@@ -9,104 +9,122 @@ import DefaultInput from '../creationInput/inputs/DefaultInput';
 import ColorPicker from '../colorpicker/ColorPicker';
 import CustomButton from '../button/CustomButton';
 import iTask from '../../../model/interface/iTask';
+import { ModalHandles, ModalProps } from './EditTaskModal/types';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
-type Props = {
-    isVisible: boolean,
-    onSaveTask: (task: iTask) => void,
-    onDeleteTask: (id: string) => void,
-    onCloseWithoutChange: () => void,
-    task: iTask
+const emptyTask: iTask = {
+    id: '',
+    name: '',
+    color: '',
+    isDone: false,
 }
 
-class EditTaskModal extends Component<Props> {
-    state = {
-        currentTask: this.props.task,
-        disableSave: false,
+const EditTaskModal = React.forwardRef<ModalHandles, ModalProps>((props, ref) => {
+    const [visible, setVisible] = useState(false);
+    const [task, setTask] = useState(emptyTask);
+
+    useImperativeHandle(ref, () => (
+        {
+            openModal: handleOpenModal,
+            setTask: setInitialTask
+        }
+    ));
+
+    const handleOpenModal = useCallback(() => {
+        setVisible(true);
+    }, []);
+
+    const handleCloseModal = useCallback(() => {
+        setVisible(false);
+    }, []);
+
+    const setInitialTask = useCallback((initialTask: iTask) => {
+        setTask(initialTask);
+    }, []);
+
+
+    const onChangeTaskName = (newName: string) => {
+        setTask({
+            ...task,
+            name: newName
+        });
     }
 
-    onChangeTaskName = (newName: string) => {
-        let task = this.state.currentTask;
-        task.name = newName;
-
-        this.setState({
-            currentTask: task,
-            disableSave: newName === ''
-        })
+    const onChangeTaskColor = (newColor: string) => {
+        setTask({
+            ...task,
+            color: newColor
+        });
     }
 
-    onChangeTaskColor = (newColor: string) => {
-        let task = this.state.currentTask;
-        task.color = newColor;
-
-        this.setState({
-            currentTask: task
-        })
+    const onSaveTask = () => {
+        handleCloseModal()
+        props.onSaveTask(task)
     }
 
-    render() {
-        const task = this.props.task;
+    const onDeleteTask = () => {
+        handleCloseModal()
+        props.onDeleteTask(task.id)
+    }
 
-        return task ?
-            (
-                <View style={{ flex: 1 }}>
-                    <Modal
-                        isVisible={this.props.isVisible}
-                        avoidKeyboard
-                        onBackdropPress={this.props.onCloseWithoutChange}
-                        onBackButtonPress={this.props.onCloseWithoutChange}
-                        style={{justifyContent: 'flex-end', margin: 0}}
-                    >
-                        <View style={styles.modalContent}>
-                            <View>
-                                <Text style={styles.title}>Edição da Tarefa</Text>
-                            </View>
-                            <View style={styles.taskNameContainer}>
-                                {this.state.disableSave ? <Text style={{color: DANGER_COLOR}}>A tarefa não pode ter um nome vazio</Text> : null}
-                                <View style={{height: 50}}>
-                                    <DefaultInput
-                                        onChangeText={this.onChangeTaskName}
-                                        placeholder="Nome da tarefa"
-                                        value={task.name}
-                                    />
-                                </View>
-                            </View>
-                            <View style={styles.colorContainer}>
-                                <Text style={styles.colorContainerTitle}>Cor da Tarefa</Text>
-                                <ColorPicker
-                                    selectedColor={task.color}
-                                    colorList={[BLUE, ORANGE, SOFT_GREEN, PURPLE, PINK]}
-                                    onSelectColor={this.onChangeTaskColor}
-                                />
-                            </View>
-                            <View style={styles.actionContainer}>
-                                <CustomButton
-                                    onPress={() => this.props.onDeleteTask(this.state.currentTask.id)}
-                                    customStyle={styles.deleteButton}
-                                >
-                                    <View style={styles.buttonContent}>
-                                        <Text style={styles.buttonText}>Excluir</Text>
-                                        <Ionicons name={Platform.OS == 'ios' ? "ios-trash" : "md-trash"} size={20} color={DEFAULT_WHITE} />
-                                    </View>
-                                </CustomButton>
-                                <CustomButton
-                                    onPress={() => this.props.onSaveTask(this.state.currentTask)}
-                                    customStyle={styles.saveButton}
-                                    disabled={this.state.disableSave}
-                                >
-                                    <View style={styles.buttonContent}>
-                                        <Text style={styles.buttonText}>Salvar</Text>
-                                        <Ionicons name={Platform.OS == 'ios' ? "ios-thumbs-up" : "md-thumbs-up"} size={20} color={DEFAULT_WHITE} />
-                                    </View>
-                                </CustomButton>
-                            </View>
-                        </View>
-                    </Modal>
+    return (
+    <View style={{ flex: 1 }}>
+        <Modal
+            isVisible={visible}
+            avoidKeyboard
+            onBackdropPress={handleCloseModal}
+            onBackButtonPress={handleCloseModal}
+            style={{ justifyContent: 'flex-end', margin: 0 }}
+        >
+            <View style={styles.modalContent}>
+                <View>
+                    <Text style={styles.title}>Edição da Tarefa</Text>
                 </View>
-            ) : null
-    }
-}
+                <View style={styles.taskNameContainer}>
+                    {task.name === '' ? <Text style={{ color: DANGER_COLOR }}>A tarefa não pode ter um nome vazio</Text> : null}
+                    <View style={{ height: 50 }}>
+                        <DefaultInput
+                            onChangeText={onChangeTaskName}
+                            placeholder="Nome da tarefa"
+                            value={task.name}
+                        />
+                    </View>
+                </View>
+                <View style={styles.colorContainer}>
+                    <Text style={styles.colorContainerTitle}>Cor da Tarefa</Text>
+                    <ColorPicker
+                        selectedColor={task.color}
+                        colorList={[BLUE, ORANGE, SOFT_GREEN, PURPLE, PINK]}
+                        onSelectColor={onChangeTaskColor}
+                    />
+                </View>
+                <View style={styles.actionContainer}>
+                    <CustomButton
+                        onPress={onDeleteTask}
+                        customStyle={styles.deleteButton}
+                    >
+                        <View style={styles.buttonContent}>
+                            <Text style={styles.buttonText}>Excluir</Text>
+                            <Icon name='trash' size={20} color={DEFAULT_WHITE} />
+                        </View>
+                    </CustomButton>
+                    <CustomButton
+                        onPress={onSaveTask}
+                        customStyle={styles.saveButton}
+                        disabled={task.name === ''}
+                    >
+                        <View style={styles.buttonContent}>
+                            <Text style={styles.buttonText}>Salvar</Text>
+                            <Icon name='thumbs-up' size={20} color={DEFAULT_WHITE} />
+                        </View>
+                    </CustomButton>
+                </View>
+            </View>
+        </Modal>
+    </View>
+    )
+});
 
 const styles = StyleSheet.create({
     container: {
@@ -123,10 +141,10 @@ const styles = StyleSheet.create({
         paddingBottom: 20,
     },
     title: {
-      color: DARK_BLUE,
-      justifyContent: 'center',
-      alignItems: 'center',
-      fontSize: 20
+        color: DARK_BLUE,
+        justifyContent: 'center',
+        alignItems: 'center',
+        fontSize: 20
     },
     taskNameContainer: {
         marginTop: 20,

@@ -1,6 +1,6 @@
 import React from 'react';
 import { FlatList, StyleSheet, View, Text, Platform, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { BLUE, DEFAULT_WHITE, SOFT_GREEN } from '../../../consts/colors';
 import CustomButton from '../../button/CustomButton';
@@ -25,7 +25,7 @@ const TaskListItem = (props: Props) => {
                 onPress={() => props.onEdit(props.task.id)}
                 customStyle={styles.editButton}
             >
-                <Ionicons name={Platform.OS === 'ios' ? 'ios-brush' : 'md-brush'} size={20} color={DEFAULT_WHITE} />
+                <Icon name='cog' size={20} color={DEFAULT_WHITE} />
             </CustomButton>
         </View>
     )

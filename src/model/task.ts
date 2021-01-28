@@ -14,14 +14,4 @@ export default class Task implements iTask {
         this.id = createGuid();
         this.color = BLUE
     }
-
-    clone (){
-        var cloneTask = new Task(this.name);
-
-        cloneTask.id = this.id;
-        cloneTask.color = this.color;
-        cloneTask.isDone = this.isDone;
-
-        return cloneTask;
-    }
 }
