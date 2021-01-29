@@ -17,8 +17,8 @@ import { ModalHandles } from '../../ui/components/modal/EditTaskModal/types';
 const TodoListScreen = () => {
     const editModalRef = createRef<ModalHandles>();
     
-    const taskList = useSelector((state: { TaskListState: iTaskListReducer }) =>
-        state.TaskListState.tasks)
+    const taskList = useSelector((state: { TaskListReducer: iTaskListReducer }) =>
+        state.TaskListReducer.tasks)
 
     const dispatch = useDispatch()
 

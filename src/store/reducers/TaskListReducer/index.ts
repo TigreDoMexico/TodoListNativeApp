@@ -1,5 +1,4 @@
 import iTask from "../../../model/interface/iTask";
-import EditTaskModal from "../../../ui/components/modal/EditTaskModal";
 import { ActionType, iTaskListReducer } from "./types";
 
 const ADD_NEW = "TaskListReducer/ADD_NEW"

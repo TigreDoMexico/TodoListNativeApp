@@ -1,7 +1,7 @@
 interface iTask {
+    readonly id: string;
     name: string;
     isDone: boolean;
-    id: string;
     color: string;
 }
 

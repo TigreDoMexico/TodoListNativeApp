@@ -9,8 +9,11 @@ type Props = {
 }
 
 const CustomButton = (props: Props) => {
+    const isDisabled = props.disabled ? props.disabled : false;
+    const onPressFunc = isDisabled ? () => {} : props.onPress;
+
     return(
-        <TouchableOpacity disabled={props.disabled ? props.disabled : false} onPress={props.onPress}>
+        <TouchableOpacity testID='touchable_custom_button' disabled={isDisabled} onPress={onPressFunc}>
             <View style={[styles.button, props.customStyle]}>
                 {props.children}
             </View>

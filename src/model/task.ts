@@ -3,15 +3,38 @@ import { createGuid } from '../utils/utils';
 import iTask from './interface/iTask';
 
 export default class Task implements iTask {
-    name: string;
+    private _id: string;
+    private _name: string;
+    private _color: string;
+
     isDone: boolean;
-    id: string;
-    color: string;
+    
+    get id(){
+        return this._id
+    }
+    
+    get name(): string {
+        return this._name
+    }
+
+    set name(value: string){
+        if(value)
+            this._name = value;
+    }
+
+    get color(): string {
+        return this._color
+    }
+
+    set color(value: string){
+        if(value)
+            this._color = value;
+    }
 
     constructor(name: string){
-        this.name = name;
+        this._id = createGuid();
+        this._name = name ? name : '';
+        this._color = BLUE
         this.isDone = false;
-        this.id = createGuid();
-        this.color = BLUE
     }
 }

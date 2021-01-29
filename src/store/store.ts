@@ -4,7 +4,7 @@ import thunk from 'redux-thunk'
 import { TaskListReducer } from './reducers/TaskListReducer/index'
 
 const reducers = combineReducers({
-    TaskListState: TaskListReducer,    
+    TaskListReducer: TaskListReducer,    
 });
 
 const configureStore = createStore(reducers, compose(applyMiddleware(thunk)))
