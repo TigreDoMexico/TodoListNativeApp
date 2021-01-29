@@ -10,6 +10,7 @@ import ColorPicker from '../colorpicker/ColorPicker';
 import CustomButton from '../button/CustomButton';
 import iTask from '../../../model/interface/iTask';
 import { ModalHandles, ModalProps } from './EditTaskModal/types';
+import Task from '../../../model/task';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -39,90 +40,101 @@ const EditTaskModal = React.forwardRef<ModalHandles, ModalProps>((props, ref) =>
         setVisible(false);
     }, []);
 
-    const setInitialTask = useCallback((initialTask: iTask) => {
+    const setInitialTask = useCallback((initialTask: Task) => {
         setTask(initialTask);
     }, []);
 
 
     const onChangeTaskName = (newName: string) => {
-        setTask({
-            ...task,
-            name: newName
-        });
+        var newTask = { ...task };
+        newTask.name = newName
+        newTask.color = task.color;
+        newTask.id = task.id;
+        newTask.isDone = task.isDone;
+
+        setTask(newTask);
     }
 
     const onChangeTaskColor = (newColor: string) => {
-        setTask({
-            ...task,
-            color: newColor
-        });
+        var newTask = { ...task };
+        newTask.color = newColor
+        newTask.name = task.name;
+        newTask.id = task.id;
+        newTask.isDone = task.isDone;
+
+        setTask(newTask);
     }
 
     const onSaveTask = () => {
-        handleCloseModal()
         props.onSaveTask(task)
+        handleCloseModal()
     }
 
     const onDeleteTask = () => {
-        handleCloseModal()
         props.onDeleteTask(task.id)
+        handleCloseModal()
     }
 
     return (
-    <View style={{ flex: 1 }}>
-        <Modal
-            isVisible={visible}
-            avoidKeyboard
-            onBackdropPress={handleCloseModal}
-            onBackButtonPress={handleCloseModal}
-            style={{ justifyContent: 'flex-end', margin: 0 }}
-        >
-            <View style={styles.modalContent}>
-                <View>
-                    <Text style={styles.title}>Edição da Tarefa</Text>
-                </View>
-                <View style={styles.taskNameContainer}>
-                    {task.name === '' ? <Text style={{ color: DANGER_COLOR }}>A tarefa não pode ter um nome vazio</Text> : null}
-                    <View style={{ height: 50 }}>
-                        <DefaultInput
-                            onChangeText={onChangeTaskName}
-                            placeholder="Nome da tarefa"
-                            value={task.name}
+        <View style={{ flex: 1 }}>
+            <Modal
+                isVisible={visible}
+                avoidKeyboard
+                onBackdropPress={handleCloseModal}
+                onBackButtonPress={handleCloseModal}
+                style={{ justifyContent: 'flex-end', margin: 0 }}
+            >
+                <View style={styles.modalContent}>
+                    <View>
+                        <Text style={styles.title}>Edição da Tarefa</Text>
+                    </View>
+                    <View style={styles.taskNameContainer}>
+                        {task.name === '' ? <Text style={{ color: DANGER_COLOR }}>A tarefa não pode ter um nome vazio</Text> : null}
+                        <View style={{ height: 50 }}>
+                            <DefaultInput
+                                onChangeText={onChangeTaskName}
+                                placeholder="Nome da tarefa"
+                                value={task.name}
+                            />
+                        </View>
+                    </View>
+                    <View style={styles.colorContainer}>
+                        <Text style={styles.colorContainerTitle}>Cor da Tarefa</Text>
+                        <ColorPicker
+                            selectedColor={task.color}
+                            colorList={[BLUE, ORANGE, SOFT_GREEN, PURPLE, PINK]}
+                            onSelectColor={onChangeTaskColor}
                         />
+                        <Text>
+                            <Text>{task.name}</Text>
+                            <Text>{task.color}</Text>
+                            <Text>{task.isDone}</Text>
+                        </Text>
+                    </View>
+                    <View style={styles.actionContainer}>
+                        <CustomButton
+                            onPress={onDeleteTask}
+                            customStyle={styles.deleteButton}
+                        >
+                            <View style={styles.buttonContent}>
+                                <Text style={styles.buttonText}>Excluir</Text>
+                                <Icon name='trash' size={20} color={DEFAULT_WHITE} />
+                            </View>
+                        </CustomButton>
+                        <CustomButton
+                            onPress={onSaveTask}
+                            customStyle={styles.saveButton}
+                            disabled={task.name === ''}
+                        >
+                            <View style={styles.buttonContent}>
+                                <Text style={styles.buttonText}>Salvar</Text>
+                                <Icon name='thumbs-up' size={20} color={DEFAULT_WHITE} />
+                            </View>
+                        </CustomButton>
                     </View>
                 </View>
-                <View style={styles.colorContainer}>
-                    <Text style={styles.colorContainerTitle}>Cor da Tarefa</Text>
-                    <ColorPicker
-                        selectedColor={task.color}
-                        colorList={[BLUE, ORANGE, SOFT_GREEN, PURPLE, PINK]}
-                        onSelectColor={onChangeTaskColor}
-                    />
-                </View>
-                <View style={styles.actionContainer}>
-                    <CustomButton
-                        onPress={onDeleteTask}
-                        customStyle={styles.deleteButton}
-                    >
-                        <View style={styles.buttonContent}>
-                            <Text style={styles.buttonText}>Excluir</Text>
-                            <Icon name='trash' size={20} color={DEFAULT_WHITE} />
-                        </View>
-                    </CustomButton>
-                    <CustomButton
-                        onPress={onSaveTask}
-                        customStyle={styles.saveButton}
-                        disabled={task.name === ''}
-                    >
-                        <View style={styles.buttonContent}>
-                            <Text style={styles.buttonText}>Salvar</Text>
-                            <Icon name='thumbs-up' size={20} color={DEFAULT_WHITE} />
-                        </View>
-                    </CustomButton>
-                </View>
-            </View>
-        </Modal>
-    </View>
+            </Modal>
+        </View>
     )
 });
 
@@ -134,7 +146,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.5)'
     },
     modalContent: {
-        height: '40%',
+        height: '50%',
         backgroundColor: DEFAULT_WHITE,
         paddingHorizontal: 20,
         paddingTop: 30,

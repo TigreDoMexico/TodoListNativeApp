@@ -8,11 +8,11 @@ export default class Task implements iTask {
     private _color: string;
 
     isDone: boolean;
-    
+
     get id(){
         return this._id
     }
-    
+
     get name(): string {
         return this._name
     }
@@ -26,9 +26,9 @@ export default class Task implements iTask {
         return this._color
     }
 
-    set color(value: string){
-        if(value)
-            this._color = value;
+    set color(_value: string){
+        if(_value)
+            this._color = _value;
     }
 
     constructor(name: string){

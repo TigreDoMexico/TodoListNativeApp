@@ -16,25 +16,31 @@ import { ModalHandles } from '../../ui/components/modal/EditTaskModal/types';
 
 const TodoListScreen = () => {
     const editModalRef = createRef<ModalHandles>();
-    
+
     const taskList = useSelector((state: { TaskListReducer: iTaskListReducer }) =>
         state.TaskListReducer.tasks)
 
     const dispatch = useDispatch()
 
-    const onChangeTaskStatusHandler = (taskId: string) => dispatch(changeTaskStatus(taskId))    
+    const onChangeTaskStatusHandler = (taskId: string) => dispatch(changeTaskStatus(taskId))
 
     const onEditTaskHandler = (taskId: string) => {
         editModalRef.current?.openModal();
-        editModalRef.current?.setTask(taskList.filter(el => el.id === taskId)[0]);
+
+        var task = taskList.filter(el => el.id === taskId)[0] as iTask
+
+        editModalRef.current?.setTask(task);
     }
 
     const onUpdateTask = (task: iTask) => dispatch(updateTask(task));
-    
+
     const onDeleteTask = (taskId: string) => dispatch(deleteTask(taskId))
 
     const onSaveTaskHandler = (taskName: string) => {
         var task = new Task(taskName)
+
+        console.log(task.name);
+
         dispatch(addNewTask(task))
     }
 
@@ -49,7 +55,7 @@ const TodoListScreen = () => {
                     onChangeTaskStatus={onChangeTaskStatusHandler}
                     onEdit={onEditTaskHandler}
                 />
-            </View>            
+            </View>
             <EditTaskModal
                 ref={editModalRef}
                 onSaveTask={onUpdateTask}
