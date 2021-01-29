@@ -13,7 +13,7 @@ Um aplicativo feito em React Native que salva uma lista de tarefas criadas pelo 
 ou
 > yarn install
 
-* Para testar em um dispositivo ou emulador é preciso primeiro configurar a máquina local
+* Para testar em um dispositivo ou emulador Android é preciso primeiro configurar a máquina local
   - Manual React Native para configurar o ambiente: https://reactnative.dev/docs/environment-setup
 
 * Para executar a aplicação no Android
