@@ -1,7 +1,7 @@
 import iTask from "../../../model/interface/iTask";
 import { ActionType, iTaskListReducer } from "./types";
 
-const ADD_NEW = "TaskListReducer/ADD_NEW"
+export const ADD_NEW = "TaskListReducer/ADD_NEW"
 const CHANGE_STATUS = "TaskListReducer/CHANGE_STATUS"
 const UPDATE = "TaskListReducer/UPDATE"
 const DELETE = "TaskListReducer/DELETE"

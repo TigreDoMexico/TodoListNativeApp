@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { Platform, Text, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
-import Task from '../../../model/task';
-import { DARK_BLUE, DEFAULT_WHITE, LIGHT_BLUE } from '../../consts/colors';
+import { TextInput, View, StyleSheet } from 'react-native';
 import DefaultButton from '../button/DefaultButton';
 import DefaultInput from './inputs/DefaultInput';
 

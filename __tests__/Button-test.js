@@ -17,4 +17,4 @@ test('Clicar no CustomButton - Esperado chamar a função pressFunc 1 vezes', ()
     act(() => button.onPress())
 
     expect(pressFunc).toHaveBeenCalledTimes(1);
-})
+});
